@@ -49,8 +49,8 @@ def upload_file(local_uri: str, s3_uri: str) -> None:
 
 @click.command()
 @click.argument('message', type=str)
-@click.option('--bucket_uri', type=str, default='s3://event-dump')
-def process_message(message: str, bucket_uri: str):
+def process_message(message: str):
+    bucket_uri = os.environ.get('S3_BUCKET')
     with tempfile.NamedTemporaryFile() as f:
         p = pathlib.Path(f.name)
         p.write_text(message)
