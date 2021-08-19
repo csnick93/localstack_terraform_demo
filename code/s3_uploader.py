@@ -26,7 +26,7 @@ def _aws_credentials():
 
 def _get_s3_client():
     if os.environ.get('LOCAL_DEVELOPMENT', None) == '1':
-        session = boto3.Session(localstack_host=os.environ['LOCALSTACK_HOST'],
+        session = boto3.Session(localstack_host='localhost',
                                 **_aws_credentials())
     else:
         session = boto3.Session(**_aws_credentials())
@@ -52,8 +52,9 @@ def upload_file(local_uri: str, s3_uri: str) -> None:
 @click.option('--bucket_uri', type=str, default='s3://event-dump')
 def process_message(message: str, bucket_uri: str):
     with tempfile.NamedTemporaryFile() as f:
-        pathlib.Path(f.name).write_text(message)
-        upload_file(f.name, bucket_uri)
+        p = pathlib.Path(f.name)
+        p.write_text(message)
+        upload_file(f.name, os.path.join(bucket_uri, p.name))
 
 
 if __name__ == '__main__':
