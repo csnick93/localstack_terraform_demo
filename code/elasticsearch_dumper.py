@@ -114,18 +114,16 @@ def process_messages():
         key = s3_info['object']['key']
         content = _get_s3_content(bucket_name, key)
 
-        # TODO: post to elastic search
         url = f'{os.environ.get("ES_URL")}/random/_doc/'
-        response = requests.post(url,
-                                 data=content,
-                                 auth=HTTPBasicAuth(*_es_credentials()),
-                                 headers={'content-type': 'application/json'})
+        _ = requests.post(url,
+                          data=json.dumps({'content': content}),
+                          auth=HTTPBasicAuth(*_es_credentials()),
+                          headers={'content-type': 'application/json'})
 
         _delete_message(queue_url, message['ReceiptHandle'])
 
 
 if __name__ == '__main__':
-    # TODO: create es schema here
     _init_elastic_search()
     while True:
         process_messages()
