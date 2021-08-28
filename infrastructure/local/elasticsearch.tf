@@ -49,8 +49,8 @@ resource "aws_elasticsearch_domain" "es" {
       enabled = true
       internal_user_database_enabled = true
       master_user_options {
-          master_user_name = "frontify"
-          master_user_password = "Our#1Brand"
+          master_user_name = "me"
+          master_user_password = "password"
       }
   }
 
